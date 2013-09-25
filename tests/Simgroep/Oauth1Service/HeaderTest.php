@@ -9,6 +9,22 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
      */
     protected $object;
 
+    protected function setUp()
+    {
+//        parent::setUp();
+        ob_start();
+
+        $headerString = 'OAuth oauth_consumer_key="a", oauth_nonce="9c7e78fc42a259ee7ec5b600543e2495", oauth_signature="1Qiem0TXjO05aB2Z77YIuCEikMA%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1380103322", oauth_token="c", oauth_version="1.0"';
+        $_SERVER['HTTP_Authorization'] = $headerString;
+
+    }
+
+    protected function tearDown()
+    {
+        unset($_SERVER['HTTP_Authorization']);
+        ob_clean();
+//        parent::tearDown();
+    }
     /**
      * @test
      * @covers Simgroep\Oauth1Service\Header::__construct
@@ -18,10 +34,10 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
      */
     public function construct()
     {
-        $headerString = 'OAuth oauth_consumer_key="a", oauth_nonce="9c7e78fc42a259ee7ec5b600543e2495", oauth_signature="1Qiem0TXjO05aB2Z77YIuCEikMA%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1380103322", oauth_token="c", oauth_version="1.0"';
-        $header = new Header($headerString);
+        $header = new Header();
         $this->assertTrue(isset($header['consumer_key']));
         $this->assertEquals('a', $header['consumer_key']);
+
     }
 
     /**
@@ -32,7 +48,8 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
     public function incorrectHeader()
     {
         $headerString = 'dummy header';
-        $header = new Header($headerString);
+        $_SERVER['HTTP_Authorization'] = $headerString;
+        $header = new Header();
     }
 
     /**
@@ -42,8 +59,7 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
      */
     public function assignException()
     {
-        $headerString = 'OAuth oauth_consumer_key="a", oauth_nonce="9c7e78fc42a259ee7ec5b600543e2495", oauth_signature="1Qiem0TXjO05aB2Z77YIuCEikMA%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1380103322", oauth_token="c", oauth_version="1.0"';
-        $header = new Header($headerString);
+        $header = new Header();
         $header['test'] = false;
     }
 
@@ -54,8 +70,7 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
      */
     public function unassignException()
     {
-        $headerString = 'OAuth oauth_consumer_key="a", oauth_nonce="9c7e78fc42a259ee7ec5b600543e2495", oauth_signature="1Qiem0TXjO05aB2Z77YIuCEikMA%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1380103322", oauth_token="c", oauth_version="1.0"';
-        $header = new Header($headerString);
+        $header = new Header();
         unset($header['test']);
     }
 }
