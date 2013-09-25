@@ -24,10 +24,10 @@ class Service
     protected $tokenSecret = '';
 
     public function __construct(
-        OauthRequest $request,
-        OauthHeader $header,
-        OauthTokenProviderInterface $consumerProvider,
-        OauthTokenProviderInterface $tokenProvider
+        Request $request,
+        Header $header,
+        TokenProviderInterface $consumerProvider,
+        TokenProviderInterface $tokenProvider
     ) {
         $this->request = $request;
         $this->header = $header;
