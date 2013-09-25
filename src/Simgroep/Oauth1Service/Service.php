@@ -25,7 +25,7 @@ class Service
     )
     {
         $this->request = $request;
-        $this->header = $this->request->getHeader();
+        $this->header = $this->request->header;
         $this->consumerProvider = $consumerProvider;
         $this->tokenProvider = $tokenProvider;
     }

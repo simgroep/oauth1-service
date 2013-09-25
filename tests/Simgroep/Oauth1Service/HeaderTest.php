@@ -9,21 +9,17 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
      */
     protected $object;
 
+    protected $authenticationHeader;
+
     protected function setUp()
     {
-//        parent::setUp();
-        ob_start();
-
-        $headerString = 'OAuth oauth_consumer_key="a", oauth_nonce="9c7e78fc42a259ee7ec5b600543e2495", oauth_signature="1Qiem0TXjO05aB2Z77YIuCEikMA%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1380103322", oauth_token="c", oauth_version="1.0"';
-        $_SERVER['HTTP_Authorization'] = $headerString;
+        $this->authenticationHeader = 'OAuth oauth_consumer_key="a", oauth_nonce="9c7e78fc42a259ee7ec5b600543e2495", oauth_signature="1Qiem0TXjO05aB2Z77YIuCEikMA%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1380103322", oauth_token="c", oauth_version="1.0"';
 
     }
 
     protected function tearDown()
     {
-        unset($_SERVER['HTTP_Authorization']);
-        ob_clean();
-//        parent::tearDown();
+
     }
     /**
      * @test
@@ -34,10 +30,9 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
      */
     public function construct()
     {
-        $header = new Header();
+        $header = new Header($this->authenticationHeader);
         $this->assertTrue(isset($header['consumer_key']));
         $this->assertEquals('a', $header['consumer_key']);
-
     }
 
     /**
@@ -48,8 +43,7 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
     public function incorrectHeader()
     {
         $headerString = 'dummy header';
-        $_SERVER['HTTP_Authorization'] = $headerString;
-        $header = new Header();
+        $header = new Header($headerString);
     }
 
     /**
@@ -59,7 +53,7 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
      */
     public function assignException()
     {
-        $header = new Header();
+        $header = new Header($this->authenticationHeader);
         $header['test'] = false;
     }
 
@@ -70,7 +64,7 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
      */
     public function unassignException()
     {
-        $header = new Header();
+        $header = new Header($this->authenticationHeader);
         unset($header['test']);
     }
 }

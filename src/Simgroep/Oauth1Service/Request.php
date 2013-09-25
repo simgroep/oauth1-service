@@ -13,12 +13,35 @@ class Request
 
     public function __construct()
     {
-        $this->header = new Header();
+        $header = $this->getAuthorizationHeader();
+        $this->header = new Header($header);
     }
 
-    public function getHeader()
+    protected function getAuthorizationHeader()
     {
-        return $this->header;
+
+        if(function_exists('apache_request_headers')){
+            $header = apache_request_headers();
+        } else {
+            $header = $this->parseRequestHeaders();
+        }
+
+        if (!isset($header['Authorization'])) {
+            throw new Exception('Authorization part of header missing...');
+        }
+        return $header['Authorization'];
+    }
+
+    protected function parseRequestHeaders() {
+        $headers = array();
+        foreach($_SERVER as $key => $value) {
+            if (substr($key, 0, 5) <> 'HTTP_') {
+                continue;
+            }
+            $header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
+            $headers[$header] = $value;
+        }
+        return $headers;
     }
 
     public function getRequestMethod()
