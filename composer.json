@@ -1,5 +1,5 @@
 {
-    "name": "?",
+    "name": "simgroep/oauth1-service",
 
     "autoload": {
         "classmap": ["src/"]
