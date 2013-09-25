@@ -2,7 +2,7 @@
 
 namespace Simgroep\Oauth1Service;
 
-class ConsumerProvider implements OauthTokenProviderInterface
+class ConsumerProvider implements TokenProviderInterface
 {
 
     public function getSecret($string)
