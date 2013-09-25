@@ -4,28 +4,54 @@ namespace Simgroep\Oauth1Service;
 
 class Header implements \ArrayAccess
 {
-    protected $header = '';
 
+    protected $header = '';
     protected $headerParts = array();
 
-    public function __construct($header)
+    public function __construct()
     {
-        $this->header = $header;
+        $this->header = $this->getAuthorizationHeader();
         $this->explodeIntoParts();
     }
 
+    protected function getAuthorizationHeader()
+    {
+
+        if(function_exists('apache_request_headers')){
+            $header = apache_request_headers();
+        } else {
+            $header = $this->parseRequestHeaders();
+        }
+
+        if (!isset($header['Authorization'])) {
+            throw new Exception('Authorization part of header missing...');
+        }
+        return $header['Authorization'];
+    }
+
+    protected function parseRequestHeaders() {
+        $headers = array();
+        foreach($_SERVER as $key => $value) {
+            if (substr($key, 0, 5) <> 'HTTP_') {
+                continue;
+            }
+            $header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
+            $headers[$header] = $value;
+        }
+        return $headers;
+    }
 
     protected function explodeIntoParts()
     {
-        if (substr($this->header,0,5) !== 'OAuth') {
+        if (substr($this->header, 0, 5) !== 'OAuth') {
             throw new Exception('Header is not correct.');
         }
         $header = str_replace('OAuth ', '', $this->header);
         $parts = explode(',', $header);
         array_walk($parts, function(&$value) {
-            $value = trim($value);
-        });
-        foreach($parts as $part) {
+                    $value = trim($value);
+                });
+        foreach ($parts as $part) {
             list($key, $value) = explode('=', $part);
             $key = str_replace('oauth_', '', $key);
             $this->headerParts[$key] = urldecode(trim($value, '"'));
@@ -93,4 +119,5 @@ class Header implements \ArrayAccess
     {
         throw new Exception('Unsetting values is not allowed.');
     }
+
 }

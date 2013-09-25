@@ -9,28 +9,23 @@ class Service
      * @var OauthRequest
      */
     protected $request;
+
     /**
      * @var OauthHeader
      */
     protected $header;
-
-    protected $error = 'No error.';
-
+    protected $error = 'Unknown error.';
     protected $consumerProvider;
-
     protected $tokenProvider;
-
     protected $consumerSecret = '';
     protected $tokenSecret = '';
 
     public function __construct(
-        Request $request,
-        Header $header,
-        TokenProviderInterface $consumerProvider,
-        TokenProviderInterface $tokenProvider
-    ) {
+    Request $request, TokenProviderInterface $consumerProvider, TokenProviderInterface $tokenProvider
+    )
+    {
         $this->request = $request;
-        $this->header = $header;
+        $this->header = $this->request->getHeader();
         $this->consumerProvider = $consumerProvider;
         $this->tokenProvider = $tokenProvider;
     }
@@ -60,7 +55,7 @@ class Service
             $this->error = 'Access token unknown.';
             return false;
         }
-
+//        var_dump($this->buildSignature(), $this->header['signature']);
         return ($this->buildSignature() == $this->header['signature']);
     }
 
@@ -89,6 +84,8 @@ class Service
             'oauth_version' => '1.0',
         );
 
+//        print_r($authorizationParts);
+
         $signatureValues = array();
         foreach ($this->request->getRequestParameters() as $k => $v) {
             $signatureValues[$k] = rawurlencode($k) . '=' . rawurlencode($v);
@@ -106,13 +103,16 @@ class Service
         ); # don't use http_build_query because that one doesn't do the encoding right
 
         $outputString = $this->request->getRequestMethod() . '&' . rawurlencode(
-                $this->request->getRequestUri()
-            ) . '&' . rawurlencode($signatureString);
+                        $this->request->getRequestUri()
+                ) . '&' . rawurlencode($signatureString);
         $signingKey = rawurlencode($this->consumerSecret) . '&' . rawurlencode($this->tokenSecret);
+
+//        echo "\n\nservice:\n";
+//        var_dump($outputString, $signingKey);
 
         $signature = hash_hmac('SHA1', $outputString, $signingKey, true);
         return base64_encode($signature);
-
     }
+
 }
 
