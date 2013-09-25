@@ -1,6 +1,8 @@
 {
     "name": "simgroep/oauth1-service",
-
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    },
     "autoload": {
         "psr-0": { "Simgroep\\Oauth1Service\\": "src/" }
     }
