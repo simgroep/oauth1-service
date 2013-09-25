@@ -7,6 +7,6 @@
     },
 
     "autoload": {
-        "classmap": ["src/"]
+        "psr-0": { "Simgroep\\Oauth1Service\\": "src/" }
     }
 }

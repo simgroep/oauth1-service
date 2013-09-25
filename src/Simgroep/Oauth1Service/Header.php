@@ -18,7 +18,7 @@ class Header implements \ArrayAccess
     protected function explodeIntoParts()
     {
         if (substr($this->header,0,5) !== 'OAuth') {
-            throw new OauthException('Header is not correct.');
+            throw new Exception('Header is not correct.');
         }
         $header = str_replace('OAuth ', '', $this->header);
         $parts = explode(',', $header);
@@ -77,7 +77,7 @@ class Header implements \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        throw new OAuthException('Setting values is not allowed.');
+        throw new Exception('Setting values is not allowed.');
     }
 
     /**
@@ -91,6 +91,6 @@ class Header implements \ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        throw new OAuthException('Unsetting values is not allowed.');
+        throw new Exception('Unsetting values is not allowed.');
     }
 }
