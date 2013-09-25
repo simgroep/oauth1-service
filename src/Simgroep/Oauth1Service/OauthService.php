@@ -1,6 +1,8 @@
 <?php
 
-class OauthService
+namespace Simgroep\Oauth1Service;
+
+class Service
 {
 
     /**

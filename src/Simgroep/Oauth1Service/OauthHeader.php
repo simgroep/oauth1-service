@@ -1,6 +1,8 @@
 <?php
 
-class OauthHeader implements ArrayAccess
+namespace Simgroep\Oauth1Service;
+
+class Header implements \ArrayAccess
 {
     protected $header = '';
 

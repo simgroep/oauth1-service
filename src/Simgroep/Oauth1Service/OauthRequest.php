@@ -1,6 +1,8 @@
 <?php
 
-class OauthRequest
+namespace Simgroep\Oauth1Service;
+
+class Request
 {
 
     public function __construct()
