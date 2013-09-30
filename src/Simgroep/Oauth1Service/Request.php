@@ -57,23 +57,17 @@ EOF;
             $header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
             $headers[$header] = $value;
         }
-        
+
         return $headers;
     }
 
     public function getRequestMethod()
     {
-        if (defined('PHPUNIT_TESTSUITE')) {
-            return 'GET';
-        }
         return $_SERVER['REQUEST_METHOD'];
     }
 
     public function getRequestUri()
     {
-        if (defined('PHPUNIT_TESTSUITE')) {
-            return 'http://simgroep.nl';
-        }
         //@todo uri for test
         $uri = 'http://' .
           htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) .

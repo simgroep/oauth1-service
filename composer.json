@@ -8,6 +8,7 @@
         "phpunit/phpunit": "3.7.*"
     },
     "autoload": {
-        "psr-0": { "Simgroep\\Oauth1Service\\": "src/" }
+        "psr-0": { "Simgroep\\Oauth1Service\\": "src/" },
+        "classmap": [ "tests/mock/Simgroep/Oauth1Service" ]
     }
 }
