@@ -31,10 +31,36 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @covers Simgroep\Oauth1Service\Service::isValidRequest
+     * @covers Simgroep\Oauth1Service\Service::buildSignature
      */
     public function isValidRequestTest()
     {
-        $this->assertTrue($this->object->isValidRequest());
+        $requestOK = new Request();
+        $service = new Service($requestOK, new TokenProvider, new TokenProvider);
+        $this->assertTrue($service->isValidRequest());
+        unset($service);
+
+        $requestWrongVersion = new Request('version');
+        $service = new Service($requestWrongVersion, new TokenProvider, new TokenProvider);
+        $this->assertFalse($service->isValidRequest());
+        unset($service);
+
+        $requestWrongHash = new Request('hash');
+        $service = new Service($requestWrongHash, new TokenProvider, new TokenProvider);
+        $this->assertFalse($service->isValidRequest());
+        unset($service);
+
+        $tokenProvider = new TokenProvider();
+        $tokenProviderError = new TokenProvider(true);
+
+        $requestWrongConsumerTonken = new Request('consumer_token');
+        $service = new Service($requestWrongConsumerTonken, $tokenProvider, $tokenProviderError);
+        $this->assertFalse($service->isValidRequest());
+        unset($service);
+
+        $requestWrongAcessTonken = new Request('access_token');
+        $service = new Service($requestWrongAcessTonken, $tokenProviderError, $tokenProvider);
+        $this->assertFalse($service->isValidRequest());
     }
 
     /**

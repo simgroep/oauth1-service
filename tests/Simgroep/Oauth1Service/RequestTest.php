@@ -44,7 +44,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function getRequestParametersTest()
     {
-        $this->assertEquals($this->object->getRequestParameters(), array());
+//        $this->assertEquals($this->object->getRequestParameters(), array());
+        $this->assertInstanceOf('Simgroep\Oauth1Service\Header', $this->object->getRequestParameters());
     }
 
     /**

@@ -89,6 +89,7 @@ class Service
         );
 
         $signatureValues = array();
+
         foreach ($this->request->getRequestParameters() as $k => $v) {
             $signatureValues[$k] = rawurlencode($k) . '=' . rawurlencode($v);
         }
