@@ -57,7 +57,7 @@ EOF;
             $header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
             $headers[$header] = $value;
         }
-        var_dump($header);
+        
         return $headers;
     }
 
