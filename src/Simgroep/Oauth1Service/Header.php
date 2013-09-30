@@ -19,16 +19,21 @@ class Header implements \ArrayAccess
         if (substr($this->header, 0, 5) !== 'OAuth') {
             throw new Exception('Header is not correct.');
         }
+
         $header = str_replace('OAuth ', '', $this->header);
         $parts = explode(',', $header);
         array_walk($parts, function(&$value) {
                     $value = trim($value);
                 });
+
         foreach ($parts as $part) {
-            list($key, $value) = explode('=', $part);
+            (int)$pos = strpos($part, '=');
+            $key = substr($part, 0, $pos);
+            $value = substr($part, $pos+1);
             $key = str_replace('oauth_', '', $key);
             $this->headerParts[$key] = urldecode(trim($value, '"'));
         }
+
     }
 
     /**

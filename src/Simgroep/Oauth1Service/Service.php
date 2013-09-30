@@ -4,7 +4,6 @@ namespace Simgroep\Oauth1Service;
 
 class Service
 {
-
     /**
      * @var OauthRequest
      */
@@ -28,6 +27,7 @@ class Service
         $this->header = $this->request->header;
         $this->consumerProvider = $consumerProvider;
         $this->tokenProvider = $tokenProvider;
+
     }
 
     public function isValidRequest()
@@ -55,7 +55,7 @@ class Service
             $this->error = 'Access token unknown.';
             return false;
         }
-//        var_dump($this->buildSignature(), $this->header['signature']);
+
         return ($this->buildSignature() == $this->header['signature']);
     }
 
@@ -84,8 +84,6 @@ class Service
             'oauth_version' => '1.0',
         );
 
-//        print_r($authorizationParts);
-
         $signatureValues = array();
         foreach ($this->request->getRequestParameters() as $k => $v) {
             $signatureValues[$k] = rawurlencode($k) . '=' . rawurlencode($v);
@@ -98,13 +96,12 @@ class Service
         }
         ksort($signatureValues); # sort key alphabetically
         $signatureString = implode(
-            '&',
-            $signatureValues
+          '&', $signatureValues
         ); # don't use http_build_query because that one doesn't do the encoding right
 
         $outputString = $this->request->getRequestMethod() . '&' . rawurlencode(
-                        $this->request->getRequestUri()
-                ) . '&' . rawurlencode($signatureString);
+            $this->request->getRequestUri()
+          ) . '&' . rawurlencode($signatureString);
         $signingKey = rawurlencode($this->consumerSecret) . '&' . rawurlencode($this->tokenSecret);
 
 //        echo "\n\nservice:\n";
@@ -113,6 +110,5 @@ class Service
         $signature = hash_hmac('SHA1', $outputString, $signingKey, true);
         return base64_encode($signature);
     }
-
 }
 

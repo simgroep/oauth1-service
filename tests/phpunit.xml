@@ -16,4 +16,7 @@
          charset="UTF-8" yui="true" highlight="true"
          lowUpperBound="35" highLowerBound="70"/>
   </logging>
+  <php>
+    <const name="PHPUNIT_TESTSUITE" value="true"/> 
+  </php>
 </phpunit>
