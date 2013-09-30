@@ -56,7 +56,11 @@ class Service
             return false;
         }
 
-        return ($this->buildSignature() == $this->header['signature']);
+        if ($this->buildSignature() !== $this->header['signature']) {
+            $this->error = 'Incorrect signature.';
+            return false;
+        }
+        return true;
     }
 
     public function getError()
