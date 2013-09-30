@@ -49,15 +49,17 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($service->isValidRequest());
         unset($service);
 
+        $tokenProvider = new TokenProvider();
+        $tokenProviderError = new TokenProvider(true);
+
         $requestWrongConsumerTonken = new Request('consumer_token');
-        $service = new Service($requestWrongConsumerTonken, new TokenProvider, new TokenProvider);
+        $service = new Service($requestWrongConsumerTonken, $tokenProvider, $tokenProviderError);
         $this->assertFalse($service->isValidRequest());
         unset($service);
 
         $requestWrongAcessTonken = new Request('access_token');
-        $service = new Service($requestWrongAcessTonken, new TokenProvider, new TokenProvider);
+        $service = new Service($requestWrongAcessTonken, $tokenProviderError, $tokenProvider);
         $this->assertFalse($service->isValidRequest());
-        unset($service);
     }
 
     /**
