@@ -31,6 +31,7 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @covers Simgroep\Oauth1Service\Service::isValidRequest
+     * @covers Simgroep\Oauth1Service\Service::buildSignature
      */
     public function isValidRequestTest()
     {

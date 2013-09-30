@@ -9,7 +9,7 @@ class TokenProvider implements TokenProviderInterface
 
     public function __construct($error = false)
     {
-        if($error)
+        if((bool)$error)
         {
             $this->error = true;
         } else {

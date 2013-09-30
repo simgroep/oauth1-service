@@ -22,7 +22,7 @@ class Request
 
     public function getRequestParameters()
     {
-        return array();
+        return $this->header;
     }
 
     public function getRequestUri()

@@ -19,27 +19,12 @@ class Request
 
     protected function getAuthorizationHeader()
     {
-        if (defined('PHPUNIT_TESTSUITE')) {
-            $header = array();
-            $header['Authorization'] =
-<<<EOF
-OAuth realm="http://simgroep.nl/",
-oauth_consumer_key="0685bd9184jfhq22",
-oauth_token="ad180jjd733klru7",
-oauth_signature_method="HMAC-SHA1",
-oauth_signature="3A7XNSlFRQ8GYjjbypt2w5FN4NQ=",
-oauth_timestamp="137131200",
-oauth_nonce="4572616e48616d6d65724c61686176",
-oauth_version="1.0"
-EOF;
-
+        if (function_exists('apache_request_headers')) {
+            $header = apache_request_headers();
         } else {
-            if (function_exists('apache_request_headers')) {
-                $header = apache_request_headers();
-            } else {
-                $header = $this->parseRequestHeaders();
-            }
+            $header = $this->parseRequestHeaders();
         }
+
         if (!isset($header['Authorization'])) {
             throw new Exception('Authorization part of header missing...');
         }
