@@ -10,6 +10,10 @@ class Header implements \ArrayAccess
 
     public function __construct($header)
     {
+        if (empty($header)) {
+            throw new Exception('Header is empty.');
+        }
+
         $this->header = $header;
         $this->explodeIntoParts();
     }
