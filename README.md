@@ -50,4 +50,17 @@ When the request is invalid, you can find out what is wrong by looking at getErr
 When the request is valid, you can fetch the required data from getDetails(). Currently, it returns the two tokens 
 used in the request.
 
+## The 'Authorization' header
+
+The code depends on having the 'Authorization' header available in your PHP context. However, when using Apache, 
+this header is not always available. When using mod_rewrite, the following rule can help with making sure the 
+variable $_SERVER['HTTP_AUTHORIZATION'] is set:
+
+```
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+```    
+
+When mod_rewrite is not available, or your .htaccess is too restricted, you might be able to work something out 
+using the apache_request_headers() function.
 
