@@ -50,6 +50,8 @@ When the request is invalid, you can find out what is wrong by looking at getErr
 When the request is valid, you can fetch the required data from getDetails(). Currently, it returns the two tokens 
 used in the request.
 
+There is a working example in the /examples folder.
+
 ## The 'Authorization' header
 
 The code depends on having the 'Authorization' header available in your PHP context. However, when using Apache, 
