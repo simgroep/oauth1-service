@@ -9,21 +9,26 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
      */
     protected $object;
 
+    protected $request;
+
+    protected $consumerProvider;
+
+    protected $tokenProvider;
+
     protected function setUp()
     {
-        $this->object = new Service(new Request, new TokenProvider, new TokenProvider);
-    }
-
-    protected function tearDown()
-    {
-
+        $this->request = $this->getMockBuilder("\\Simgroep\\Oauth1Service\\Request")->disableOriginalConstructor()->getMock();
+        $this->request->header = $this->getMockBuilder("\\Simgroep\\Oauth1Service\\Header")->disableOriginalConstructor()->getMock();
+        $this->consumerProvider = $this->getMock("\\Simgroep\\Oauth1Service\\TokenProvider");
+        $this->tokenProvider = $this->getMock("\\Simgroep\\Oauth1Service\\TokenProvider");
+        $this->object = new Service($this->request, $this->consumerProvider, $this->tokenProvider);
     }
 
     /**
      * @test
      * @covers Simgroep\Oauth1Service\Service::__construct
      */
-    public function testClass()
+    public function construct()
     {
         $this->assertInstanceOf('Simgroep\Oauth1Service\Service', $this->object);
     }
@@ -31,36 +36,154 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @covers Simgroep\Oauth1Service\Service::isValidRequest
+     * @covers Simgroep\Oauth1Service\Service::getError
+     */
+    public function inValidRequestVersion()
+    {
+        $this->request->header->expects($this->any())
+            ->method('offsetGet')
+            ->will($this->returnValue('0.1'));
+
+        $this->assertFalse($this->object->isValidRequest());
+        $this->assertEquals('Wrong version.', $this->object->getError());
+    }
+
+    /**
+     * @test
+     * @covers Simgroep\Oauth1Service\Service::isValidRequest
+     */
+    public function inValidRequestSignatureMethod()
+    {
+        $this->request->header->expects($this->any())
+            ->method('offsetGet')
+            ->will($this->onConsecutiveCalls('1.0', 'md5'));
+
+        $this->assertFalse($this->object->isValidRequest());
+        $this->assertEquals('Wrong hashing method.', $this->object->getError());
+    }
+
+    /**
+     * @test
+     * @covers Simgroep\Oauth1Service\Service::isValidRequest
+     */
+    public function inValidRequestConsumerToken()
+    {
+        $this->request->header->expects($this->any())
+            ->method('offsetGet')
+            ->will($this->onConsecutiveCalls('1.0', 'HMAC-SHA1'));
+
+        $this->consumerProvider->expects($this->any())
+            ->method('getSecret')
+            ->will($this->returnValue(''));
+
+
+        $this->assertFalse($this->object->isValidRequest());
+        $this->assertEquals('Consumer token unknown.', $this->object->getError());
+    }
+
+    /**
+     * @test
+     * @covers Simgroep\Oauth1Service\Service::isValidRequest
+     */
+    public function inValidRequestAccessToken()
+    {
+        $this->request->header->expects($this->any())
+            ->method('offsetGet')
+            ->will($this->onConsecutiveCalls('1.0', 'HMAC-SHA1'));
+
+        $this->consumerProvider->expects($this->any())
+            ->method('getSecret')
+            ->will($this->returnValue('something'));
+
+        $this->tokenProvider->expects($this->any())
+            ->method('getSecret')
+            ->will($this->returnValue(''));
+
+        $this->assertFalse($this->object->isValidRequest());
+        $this->assertEquals('Access token unknown.', $this->object->getError());
+    }
+
+    /**
+     * @test
+     * @covers Simgroep\Oauth1Service\Service::isValidRequest
      * @covers Simgroep\Oauth1Service\Service::buildSignature
      */
-    public function isValidRequestTest()
+    public function inValidRequestSignature()
     {
-        $requestOK = new Request();
-        $service = new Service($requestOK, new TokenProvider, new TokenProvider);
-        $this->assertTrue($service->isValidRequest());
-        unset($service);
+        $this->request->expects($this->any())
+            ->method('getRequestParameters')
+            ->will($this->returnValue(array()));
 
-        $requestWrongVersion = new Request('version');
-        $service = new Service($requestWrongVersion, new TokenProvider, new TokenProvider);
-        $this->assertFalse($service->isValidRequest());
-        unset($service);
+        $this->request->header->expects($this->any())
+            ->method('offsetGet')
+            ->will($this->onConsecutiveCalls('1.0', 'HMAC-SHA1', 'signature'));
 
-        $requestWrongHash = new Request('hash');
-        $service = new Service($requestWrongHash, new TokenProvider, new TokenProvider);
-        $this->assertFalse($service->isValidRequest());
-        unset($service);
+        $this->consumerProvider->expects($this->any())
+            ->method('getSecret')
+            ->will($this->returnValue('something'));
 
-        $tokenProvider = new TokenProvider();
-        $tokenProviderError = new TokenProvider(true);
+        $this->tokenProvider->expects($this->any())
+            ->method('getSecret')
+            ->will($this->returnValue('something'));
 
-        $requestWrongConsumerTonken = new Request('consumer_token');
-        $service = new Service($requestWrongConsumerTonken, $tokenProvider, $tokenProviderError);
-        $this->assertFalse($service->isValidRequest());
-        unset($service);
+        $this->assertFalse($this->object->isValidRequest());
+        $this->assertEquals('Incorrect signature.', $this->object->getError());
+    }
 
-        $requestWrongAcessTonken = new Request('access_token');
-        $service = new Service($requestWrongAcessTonken, $tokenProviderError, $tokenProvider);
-        $this->assertFalse($service->isValidRequest());
+    /**
+     * @test
+     * @covers Simgroep\Oauth1Service\Service::isValidRequest
+     * @covers Simgroep\Oauth1Service\Service::buildSignature
+     * @covers Simgroep\Oauth1Service\Service::getDetails
+     */
+    public function validRequestSignature()
+    {
+        $this->request->expects($this->any())
+            ->method('getRequestParameters')
+            ->will($this->returnValue(array('foo' => 'bar')));
+
+        $this->request->expects($this->any())
+            ->method('getRequestMethod')
+            ->will($this->returnValue('GET'));
+
+        $this->request->expects($this->any())
+            ->method('getRequestUri')
+            ->will($this->returnValue('http://example.org/test'));
+
+        $this->request->header->expects($this->any())
+            ->method('offsetGet')
+            ->will(
+                $this->returnCallback(
+                    function ($key) {
+                        $returnValues = array(
+                            'version' => '1.0',
+                            'signature_method' => 'HMAC-SHA1',
+                            'signature' => '+Z7LDrAIx9vXwW/rH2ugdOg0Es0=',
+                            'consumer_key' => 'consumerKey',
+                            'token' => 'tokenKey',
+                            'nonce' => '9c7e78fc42a259ee7ec5b600543e2495',
+                            'timestamp' => '1234567890',
+                        );
+                        return $returnValues[$key];
+                    }
+                )
+            );
+
+        $this->consumerProvider->expects($this->any())
+            ->method('getSecret')
+            ->will($this->returnValue('consumerSecret'));
+
+        $this->tokenProvider->expects($this->any())
+            ->method('getSecret')
+            ->will($this->returnValue('tokenSecret'));
+
+        $this->assertTrue($this->object->isValidRequest());
+        $this->assertEquals('Unknown error.', $this->object->getError());
+        $details = $this->object->getDetails();
+        $this->assertArrayHasKey('consumerToken', $details);
+        $this->assertArrayHasKey('accessToken', $details);
+        $this->assertEquals('consumerKey', $details['consumerToken']);
+        $this->assertEquals('tokenKey', $details['accessToken']);
     }
 
     /**
@@ -70,17 +193,5 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     public function getErrorTest()
     {
         $this->assertEquals('Unknown error.', $this->object->getError());
-    }
-
-    /**
-     * @test
-     * @covers Simgroep\Oauth1Service\Service::getDetails
-     */
-    public function getDetailsTest()
-    {
-        $details = $this->object->getDetails();
-
-        $this->assertEquals('0685bd9184jfhq22', $details['consumerToken']);
-        $this->assertEquals('ad180jjd733klru7', $details['accessToken']);
     }
 }
