@@ -4,6 +4,13 @@ namespace Simgroep\Oauth1Service;
 
 use Simgroep\Oauth1Service\Header;
 
+/**
+ * Basic request class
+ *
+ * Uses readily available superglobals to provide context values.
+ *
+ * @package Simgroep\Oauth1Service
+ */
 class Request
 {
     /**
@@ -19,31 +26,11 @@ class Request
 
     protected function getAuthorizationHeader()
     {
-        if (function_exists('apache_request_headers')) {
-            $header = apache_request_headers();
+        if (array_key_exists('HTTP_AUTHORIZATION', $_SERVER)) {
+            return $_SERVER['HTTP_AUTHORIZATION'];
         } else {
-            $header = $this->parseRequestHeaders();
+            throw new Exception('No Authorization signature in request.');
         }
-
-        if (!isset($header['Authorization'])) {
-            throw new Exception('Authorization part of header missing...');
-        }
-
-        return $header['Authorization'];
-    }
-
-    protected function parseRequestHeaders()
-    {
-        $headers = array();
-        foreach ($_SERVER as $key => $value) {
-            if (substr($key, 0, 5) <> 'HTTP_') {
-                continue;
-            }
-            $header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
-            $headers[$header] = $value;
-        }
-
-        return $headers;
     }
 
     public function getRequestMethod()
@@ -53,16 +40,25 @@ class Request
 
     public function getRequestUri()
     {
-        //@todo uri for test
-        $uri = 'http://' .
-          htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) .
-          htmlentities($_SERVER['REQUEST_URI'], ENT_QUOTES);
+        if (empty($_SERVER['HTTPS'])) {
+            $scheme = 'http://';
+        } else {
+            $scheme = 'https://';
+        }
 
-        return str_replace('?', '', $uri);
+        $host = htmlentities($_SERVER['HTTP_HOST'], ENT_QUOTES);
+        $path = htmlentities($_SERVER['REQUEST_URI'], ENT_QUOTES);
+
+        return rtrim($scheme . $host . $path, '?');
     }
 
     public function getRequestParameters()
     {
-        return array();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            return $_POST;
+        } else {
+            return $_GET;
+        }
     }
 }
+
