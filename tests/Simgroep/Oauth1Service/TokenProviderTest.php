@@ -13,7 +13,7 @@ class TokenProviderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->object = new TokenProvider();
-        $this->objectWithError = new TokenProvider(true);
+        $this->objectWithError = new MockTokenProvider(true);
     }
 
     protected function tearDown()

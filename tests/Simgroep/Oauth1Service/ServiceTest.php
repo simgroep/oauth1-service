@@ -11,7 +11,7 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->object = new Service(new Request, new TokenProvider, new TokenProvider);
+        $this->object = new Service(new Request, new MockTokenProvider, new MockTokenProvider);
     }
 
     protected function tearDown()
@@ -36,22 +36,22 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     public function isValidRequestTest()
     {
         $requestOK = new Request();
-        $service = new Service($requestOK, new TokenProvider, new TokenProvider);
+        $service = new Service($requestOK, new MockTokenProvider, new MockTokenProvider);
         $this->assertTrue($service->isValidRequest());
         unset($service);
 
         $requestWrongVersion = new Request('version');
-        $service = new Service($requestWrongVersion, new TokenProvider, new TokenProvider);
+        $service = new Service($requestWrongVersion, new MockTokenProvider, new MockTokenProvider);
         $this->assertFalse($service->isValidRequest());
         unset($service);
 
         $requestWrongHash = new Request('hash');
-        $service = new Service($requestWrongHash, new TokenProvider, new TokenProvider);
+        $service = new Service($requestWrongHash, new MockTokenProvider, new MockTokenProvider);
         $this->assertFalse($service->isValidRequest());
         unset($service);
 
-        $tokenProvider = new TokenProvider();
-        $tokenProviderError = new TokenProvider(true);
+        $tokenProvider = new MockTokenProvider();
+        $tokenProviderError = new MockTokenProvider(true);
 
         $requestWrongConsumerTonken = new Request('consumer_token');
         $service = new Service($requestWrongConsumerTonken, $tokenProvider, $tokenProviderError);
