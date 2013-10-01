@@ -1,7 +1,6 @@
 {
     "name": "simgroep/oauth1-service",
     "require": {
-        "php": ">=5.4.0",
         "doctrine/orm": "2.4.*"
     },
     "require-dev": {
