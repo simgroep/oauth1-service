@@ -102,7 +102,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $_SERVER['HTTPS'] = 'on';
         $_SERVER['HTTP_HOST'] = 'example.org';
         $_SERVER['REQUEST_URI'] = '/test';
-        $this->assertEquals($this->object->getRequestUri(), 'https://example.orgl/test');
+        $this->assertEquals($this->object->getRequestUri(), 'https://example.org/test');
     }
 }
 
