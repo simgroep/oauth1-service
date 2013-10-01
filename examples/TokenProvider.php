@@ -1,12 +1,12 @@
 <?php
 
-namespace Simgroep\Oauth1Service;
+use Simgroep\Oauth1Service\TokenProviderInterface;
 
 class TokenProvider implements TokenProviderInterface
 {
 
     public function getSecret($string)
     {
-        return 'd';
+        return 'tokenSecret';
     }
 }

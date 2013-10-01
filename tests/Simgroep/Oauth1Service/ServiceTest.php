@@ -19,8 +19,8 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     {
         $this->request = $this->getMockBuilder("\\Simgroep\\Oauth1Service\\Request")->disableOriginalConstructor()->getMock();
         $this->request->header = $this->getMockBuilder("\\Simgroep\\Oauth1Service\\Header")->disableOriginalConstructor()->getMock();
-        $this->consumerProvider = $this->getMock("\\Simgroep\\Oauth1Service\\TokenProvider");
-        $this->tokenProvider = $this->getMock("\\Simgroep\\Oauth1Service\\TokenProvider");
+        $this->consumerProvider = $this->getMock("\\Simgroep\\Oauth1Service\\TokenProviderInterface");
+        $this->tokenProvider = $this->getMock("\\Simgroep\\Oauth1Service\\TokenProviderInterface");
         $this->object = new Service($this->request, $this->consumerProvider, $this->tokenProvider);
     }
 
