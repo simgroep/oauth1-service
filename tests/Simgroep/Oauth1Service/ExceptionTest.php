@@ -14,18 +14,14 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $this->object = new Exception();
     }
 
-    protected function tearDown()
-    {
-
-    }
-
     /**
      * @test
      * @covers Simgroep\Oauth1Service\Exception::__construct
      */
-    public function __constructTest()
+    public function construct()
     {
         $this->assertInstanceOf('\Simgroep\Oauth1Service\Exception', $this->object);
+        $this->assertInstanceOf('\Exception', $this->object);
     }
 }
 
