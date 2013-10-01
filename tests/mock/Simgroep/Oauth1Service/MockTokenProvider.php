@@ -2,7 +2,7 @@
 
 namespace Simgroep\Oauth1Service;
 
-class TokenProvider implements TokenProviderInterface
+class MockTokenProvider implements TokenProviderInterface
 {
 
     private $error;
