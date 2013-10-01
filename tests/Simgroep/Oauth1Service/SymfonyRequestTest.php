@@ -121,13 +121,13 @@ class SymfonyRequestTest extends \PHPUnit_Framework_TestCase
     {
         $this->request->expects($this->any())
             ->method('getSchemeAndHttpHost')
-            ->will($this->returnValue('http://simgroep.nl'));
+            ->will($this->returnValue('http://example.org'));
 
         $this->request->expects($this->any())
             ->method('getRequestUri')
             ->will($this->returnValue('/test'));
 
-        $this->assertEquals($this->object->getRequestUri(), 'http://simgroep.nl/test');
+        $this->assertEquals($this->object->getRequestUri(), 'http://example.org/test');
     }
 }
 

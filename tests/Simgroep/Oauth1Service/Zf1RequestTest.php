@@ -119,13 +119,13 @@ class Zf1RequestTest extends \PHPUnit_Framework_TestCase
 
         $this->request->expects($this->any())
             ->method('getHttpHost')
-            ->will($this->returnValue('simgroep.nl'));
+            ->will($this->returnValue('example.org'));
 
         $this->request->expects($this->any())
             ->method('getRequestUri')
             ->will($this->returnValue('/test'));
 
-        $this->assertEquals($this->object->getRequestUri(), 'http://simgroep.nl/test');
+        $this->assertEquals($this->object->getRequestUri(), 'http://example.org/test');
     }
 }
 
