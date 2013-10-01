@@ -37,6 +37,16 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @covers Simgroep\Oauth1Service\Header::__construct
+     * @expectedException \Simgroep\Oauth1Service\Exception
+     */
+    public function emptyHeader()
+    {
+        $header = new Header('');
+    }
+
+    /**
+     * @test
      * @covers Simgroep\Oauth1Service\Header::explodeIntoParts
      * @expectedException \Simgroep\Oauth1Service\Exception
      */
