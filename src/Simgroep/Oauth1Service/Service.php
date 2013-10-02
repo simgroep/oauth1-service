@@ -65,13 +65,19 @@ class Service
         #@todo check for nonce/timestamp
 
         $this->consumerSecret = $this->consumerProvider->getSecret($this->header['consumer_key']);
-        if (empty($this->consumerSecret)) {
+        if ($this->header['consumer_key'] == '') {
+            $this->error = 'Consumer token missing.';
+            return false;
+        } elseif (empty($this->consumerSecret)) {
             $this->error = 'Consumer token unknown.';
             return false;
         }
 
         $this->tokenSecret = $this->tokenProvider->getSecret($this->header['token']);
-        if (empty($this->tokenSecret)) {
+        if ($this->accessTokenRequired === true and $this->header['token'] == '') {
+            $this->error = 'Access token missing.';
+            return false;
+        } elseif ($this->accessTokenRequired === true and empty($this->tokenSecret)) {
             $this->error = 'Access token unknown.';
             return false;
         }
@@ -129,8 +135,7 @@ class Service
           ) . '&' . rawurlencode($signatureString);
         $signingKey = rawurlencode($this->consumerSecret) . '&' . rawurlencode($this->tokenSecret);
 
-//        echo "\n\nservice:\n";
-//        var_dump($outputString, $signingKey);
+//echo $outputString,PHP_EOL,$signingKey,PHP_EOL;
 
         $signature = hash_hmac('SHA1', $outputString, $signingKey, true);
         return base64_encode($signature);
