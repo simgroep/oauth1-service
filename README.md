@@ -8,7 +8,7 @@ This library can be added to an application that wishes to validate their client
 ## Installation
 Just use Composer:
 
-	"require-dev": {
+	"require": {
 	    "simgroep/oauth1-service": "1.*"
 	}
 
