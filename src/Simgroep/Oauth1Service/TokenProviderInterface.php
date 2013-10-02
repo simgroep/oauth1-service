@@ -6,3 +6,4 @@ interface TokenProviderInterface
 {
     public function getSecret($string);
 }
+

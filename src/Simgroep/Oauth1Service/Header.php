@@ -26,14 +26,17 @@ class Header implements \ArrayAccess
 
         $header = str_replace('OAuth ', '', $this->header);
         $parts = explode(',', $header);
-        array_walk($parts, function(&$value) {
-                    $value = trim($value);
-                });
+        array_walk(
+            $parts,
+            function (&$value) {
+                $value = trim($value);
+            }
+        );
 
         foreach ($parts as $part) {
             (int)$pos = strpos($part, '=');
             $key = substr($part, 0, $pos);
-            $value = substr($part, $pos+1);
+            $value = substr($part, $pos + 1);
             $key = str_replace('oauth_', '', $key);
             $this->headerParts[$key] = urldecode(trim($value, '"'));
         }
@@ -101,5 +104,5 @@ class Header implements \ArrayAccess
     {
         throw new Exception('Unsetting values is not allowed.');
     }
-
 }
+
