@@ -45,6 +45,16 @@ create implement the TokenProviderInterface, you're fine. Its getSecret() method
 look it up somewhere (in a database, through some service, from an array of values, whatever you want) and return 
 its secret.
 
+When you don't need an accessToken to be included in the request, you can omit the TokenProvider and let the Service 
+know that an accessToken is not required:
+
+```
+$os->setAccessTokenRequired(false);
+```
+
+You can also include the TokenProvider and use this call: the token will then be optional. (The token will be validated 
+when included, and ignored when not included.)
+
 When the request is invalid, you can find out what is wrong by looking at getError().
 
 When the request is valid, you can fetch the required data from getDetails(). Currently, it returns the two tokens 
