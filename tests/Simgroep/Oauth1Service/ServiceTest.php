@@ -35,6 +35,28 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @covers Simgroep\Oauth1Service\Service::setAccessTokenRequired
+     * @covers Simgroep\Oauth1Service\Service::getAccessTokenRequired
+     */
+    public function accessTokenRequiredTrue()
+    {
+        $this->object->setAccessTokenRequired(true);
+        $this->assertTrue($this->object->getAccessTokenRequired());
+    }
+
+    /**
+     * @test
+     * @covers Simgroep\Oauth1Service\Service::setAccessTokenRequired
+     * @covers Simgroep\Oauth1Service\Service::getAccessTokenRequired
+     */
+    public function accessTokenRequiredFalse()
+    {
+        $this->object->setAccessTokenRequired(false);
+        $this->assertFalse($this->object->getAccessTokenRequired());
+    }
+
+    /**
+     * @test
      * @covers Simgroep\Oauth1Service\Service::isValidRequest
      * @covers Simgroep\Oauth1Service\Service::getError
      */

@@ -19,6 +19,8 @@ class Service
     protected $consumerSecret = '';
     protected $tokenSecret = '';
 
+    protected $accessTokenRequired = true;
+
     public function __construct(
     Request $request, TokenProviderInterface $consumerProvider, TokenProviderInterface $tokenProvider
     )
@@ -28,6 +30,24 @@ class Service
         $this->consumerProvider = $consumerProvider;
         $this->tokenProvider = $tokenProvider;
 
+    }
+
+    /**
+     * Indicates whether it is required to include an accessToken (oauth_token) in the request
+     *
+     * @param boolean $required
+     */
+    public function setAccessTokenRequired($required)
+    {
+        $this->accessTokenRequired = (bool) $required;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getAccessTokenRequired()
+    {
+        return $this->accessTokenRequired;
     }
 
     public function isValidRequest()
