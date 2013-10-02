@@ -6,8 +6,13 @@ OAuth 1 Service
 This library can be added to an application that wishes to validate their clients' requests with OAuth.
 
 ## Installation
-For now, just clone the repository and include/autoload everything yourself. Once the initial development is done, 
-a Composer/Packagist installation will be made possible.
+Just use Composer:
+
+	"require-dev": {
+	    "simgroep/oauth1-service": "1.*"
+	}
+
+Or just clone the repository and include/autoload everything yourself. But why would you?
 
 ## Usage
 There is a runner.php that serves as an example of usage. In the simplest way, use it like this:
