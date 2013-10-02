@@ -22,14 +22,14 @@ class Service
     protected $accessTokenRequired = true;
 
     public function __construct(
-    Request $request, TokenProviderInterface $consumerProvider, TokenProviderInterface $tokenProvider
-    )
-    {
+        Request $request,
+        TokenProviderInterface $consumerProvider,
+        TokenProviderInterface $tokenProvider = null
+    ) {
         $this->request = $request;
         $this->header = $this->request->header;
         $this->consumerProvider = $consumerProvider;
         $this->tokenProvider = $tokenProvider;
-
     }
 
     /**
@@ -127,15 +127,12 @@ class Service
         }
         ksort($signatureValues); # sort key alphabetically
         $signatureString = implode(
-          '&', $signatureValues
+            '&',
+            $signatureValues
         ); # don't use http_build_query because that one doesn't do the encoding right
 
-        $outputString = $this->request->getRequestMethod() . '&' . rawurlencode(
-            $this->request->getRequestUri()
-          ) . '&' . rawurlencode($signatureString);
+        $outputString = $this->request->getRequestMethod() . '&' . rawurlencode($this->request->getRequestUri()) . '&' . rawurlencode($signatureString);
         $signingKey = rawurlencode($this->consumerSecret) . '&' . rawurlencode($this->tokenSecret);
-
-//echo $outputString,PHP_EOL,$signingKey,PHP_EOL;
 
         $signature = hash_hmac('SHA1', $outputString, $signingKey, true);
         return base64_encode($signature);
