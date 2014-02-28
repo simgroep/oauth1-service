@@ -145,7 +145,7 @@ class Service
     protected function getBaseUrl()
     {
         $parts = parse_url($this->request->getRequestUri());
-        return sprintf('%s%s%s', $parts['scheme'] . $parts['host'], $parts['path']);
+        return sprintf('%s://%s%s', $parts['scheme'] , $parts['host'], $parts['path']);
     }
 }
 
