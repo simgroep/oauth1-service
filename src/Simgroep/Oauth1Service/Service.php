@@ -131,11 +131,21 @@ class Service
             $signatureValues
         ); # don't use http_build_query because that one doesn't do the encoding right
 
-        $outputString = $this->request->getRequestMethod() . '&' . rawurlencode($this->request->getRequestUri()) . '&' . rawurlencode($signatureString);
+        $outputString = $this->request->getRequestMethod() . '&' . rawurlencode($this->getBaseUrl()) . '&' . rawurlencode($signatureString);
         $signingKey = rawurlencode($this->consumerSecret) . '&' . rawurlencode($this->tokenSecret);
 
         $signature = hash_hmac('SHA1', $outputString, $signingKey, true);
         return base64_encode($signature);
+    }
+
+    /**
+     * Remove hash and query string to supply base url for signature
+     * @return mixed
+     */
+    protected function getBaseUrl()
+    {
+        $parts = parse_url($this->request->getRequestUri());
+        return sprintf('%s%s%s', $parts['sheme'] . $parts['host'], $parts['path']);
     }
 }
 
