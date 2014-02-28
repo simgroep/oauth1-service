@@ -29,7 +29,7 @@ class SymfonyRequest extends Request
 
     public function getRequestUri()
     {
-        return $this->request->getSchemeAndHttpHost() . strtok($this->request->getRequestUri(), '?');
+        return $this->request->getSchemeAndHttpHost() . rtrim($this->request->getRequestUri(), '?');
     }
 
     public function getRequestParameters()

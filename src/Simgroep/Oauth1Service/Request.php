@@ -49,7 +49,7 @@ class Request
         $host = htmlentities($_SERVER['HTTP_HOST'], ENT_QUOTES);
         $path = htmlentities($_SERVER['REQUEST_URI'], ENT_QUOTES);
 
-        return strtok($scheme . $host . $path, '?');
+        return rtrim($scheme . $host . $path, '?');
     }
 
     public function getRequestParameters()
