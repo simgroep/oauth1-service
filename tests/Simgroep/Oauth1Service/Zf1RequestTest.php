@@ -2,7 +2,9 @@
 
 namespace Simgroep\Oauth1Service;
 
-class Zf1RequestTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class Zf1RequestTest extends TestCase
 {
     /**
      * @var \Simgroep\Oauth1Service\Zf1Request
@@ -13,12 +15,14 @@ class Zf1RequestTest extends \PHPUnit_Framework_TestCase
 
     protected $request;
 
-    protected function setUp()
+    protected function setUp(): void
     {
+        if (! class_exists("Zend_Controller_Request_Http")) {
+            $this->markTestSkipped('Zend_Controller_Request_Http class not found');
+        }
 
-        $this->request = $this->getMock(
-            "\\Zend_Controller_Request_Http",
-            array(
+        $this->request = $this->getMockBuilder("\\Zend_Controller_Request_Http")
+            ->addMethods([
                 'getHeader',
                 'getMethod',
                 'getScheme',
@@ -27,8 +31,7 @@ class Zf1RequestTest extends \PHPUnit_Framework_TestCase
                 'isPost',
                 'getPost',
                 'getQuery'
-            )
-        );
+            ])->getMock();
 
         $this->request->expects($this->any())
             ->method('getHeader')

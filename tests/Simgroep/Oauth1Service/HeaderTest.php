@@ -2,7 +2,9 @@
 
 namespace Simgroep\Oauth1Service;
 
-class HeaderTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class HeaderTest extends TestCase
 {
     /**
      * @var \Simgroep\Oauth1Service\Header
@@ -11,13 +13,13 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
 
     protected $authenticationHeader;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->authenticationHeader = 'OAuth oauth_consumer_key="a", oauth_nonce="9c7e78fc42a259ee7ec5b600543e2495", oauth_signature="1Qiem0TXjO05aB2Z77YIuCEikMA%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1380103322", oauth_token="c", oauth_version="1.0"';
 
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
 
     }
@@ -38,20 +40,22 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @covers Simgroep\Oauth1Service\Header::__construct
-     * @expectedException \Simgroep\Oauth1Service\Exception
      */
     public function emptyHeader()
     {
+        $this->expectException(\Simgroep\Oauth1Service\Exception::class);
+
         $header = new Header('');
     }
 
     /**
      * @test
      * @covers Simgroep\Oauth1Service\Header::explodeIntoParts
-     * @expectedException \Simgroep\Oauth1Service\Exception
      */
     public function incorrectHeader()
     {
+        $this->expectException(\Simgroep\Oauth1Service\Exception::class);
+
         $headerString = 'dummy header';
         $header = new Header($headerString);
     }
@@ -59,10 +63,11 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @covers Simgroep\Oauth1Service\Header::offsetSet
-     * @expectedException \Simgroep\Oauth1Service\Exception
      */
     public function assignException()
     {
+        $this->expectException(\Simgroep\Oauth1Service\Exception::class);
+
         $header = new Header($this->authenticationHeader);
         $header['test'] = false;
     }
@@ -70,10 +75,11 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @covers Simgroep\Oauth1Service\Header::offsetUnset
-     * @expectedException \Simgroep\Oauth1Service\Exception
      */
     public function unassignException()
     {
+        $this->expectException(\Simgroep\Oauth1Service\Exception::class);
+
         $header = new Header($this->authenticationHeader);
         unset($header['test']);
     }
