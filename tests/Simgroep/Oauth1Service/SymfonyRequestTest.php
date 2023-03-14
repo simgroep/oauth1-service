@@ -2,7 +2,9 @@
 
 namespace Simgroep\Oauth1Service;
 
-class SymfonyRequestTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class SymfonyRequestTest extends TestCase
 {
     /**
      * @var \Simgroep\Oauth1Service\SymfonyRequest
@@ -19,23 +21,31 @@ class SymfonyRequestTest extends \PHPUnit_Framework_TestCase
 
     protected $postRequest;
 
-    protected function setUp()
+    protected function setUp(): void
     {
+        if (! class_exists("Symfony\Component\HttpFoundation\HeaderBag")) {
+            $this->markTestSkipped('Symfony\Component\HttpFoundation\HeaderBag class not found');
+        }
 
-        $this->headers = $this->getMock("\\Symfony\\Component\\HttpFoundation\\HeaderBag", array('get'));
+        $this->headers = $this->getMockBuilder("\\Symfony\\Component\\HttpFoundation\\HeaderBag")
+            ->addMethods(['get'])
+            ->getMock();
         $this->headers->expects($this->any())
             ->method('get')
             ->will($this->returnValue($this->testHeader));
 
-        $this->query = $this->getMock("\\Symfony\\Component\\HttpFoundation\\ParameterBag", array('all'));
+        $this->query = $this->getMockBuilder("\\Symfony\\Component\\HttpFoundation\\ParameterBag")
+            ->addMethods(['all'])
+            ->getMock();
 
-        $this->postRequest = $this->getMock("\\Symfony\\Component\\HttpFoundation\\ParameterBag", array('all'));
+        $this->postRequest = $this->getMockBuilder("\\Symfony\\Component\\HttpFoundation\\ParameterBag")
+            ->addMethods(['all'])
+            ->getMock();
 
+        $this->request = $this->getMockBuilder("\\Symfony\\Component\\HttpFoundation\\Request")
+            ->addMethods(['getMethod', 'getRealMethod', 'getSchemeAndHttpHost', 'getRequestUri'])
+            ->getMock();
 
-        $this->request = $this->getMock(
-            "\\Symfony\\Component\\HttpFoundation\\Request",
-            array('getMethod', 'getRealMethod', 'getSchemeAndHttpHost', 'getRequestUri')
-        );
         $this->request->headers = $this->headers;
         $this->request->query = $this->query;
         $this->request->request = $this->postRequest;

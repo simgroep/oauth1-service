@@ -2,7 +2,9 @@
 
 namespace Simgroep\Oauth1Service;
 
-class ServiceTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ServiceTest extends TestCase
 {
     /**
      * @var \Simgroep\Oauth1Service\Service
@@ -15,12 +17,12 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
 
     protected $tokenProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->request = $this->getMockBuilder("\\Simgroep\\Oauth1Service\\Request")->disableOriginalConstructor()->getMock();
         $this->request->header = $this->getMockBuilder("\\Simgroep\\Oauth1Service\\Header")->disableOriginalConstructor()->getMock();
-        $this->consumerProvider = $this->getMock("\\Simgroep\\Oauth1Service\\TokenProviderInterface");
-        $this->tokenProvider = $this->getMock("\\Simgroep\\Oauth1Service\\TokenProviderInterface");
+        $this->consumerProvider = $this->getMockBuilder("\\Simgroep\\Oauth1Service\\TokenProviderInterface")->getMock();
+        $this->tokenProvider = $this->getMockBuilder("\\Simgroep\\Oauth1Service\\TokenProviderInterface")->getMock();
         $this->object = new Service($this->request, $this->consumerProvider, $this->tokenProvider);
     }
 

@@ -2,7 +2,9 @@
 
 namespace Simgroep\Oauth1Service;
 
-class RequestTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class RequestTest extends TestCase
 {
     /**
      * @var \Simgroep\Oauth1Service\Request
@@ -11,7 +13,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     protected $testHeader = 'OAuth oauth_consumer_key="a", oauth_nonce="9c7e78fc42a259ee7ec5b600543e2495", oauth_signature="1Qiem0TXjO05aB2Z77YIuCEikMA%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1380103322", oauth_token="c", oauth_version="1.0"';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $_SERVER['HTTP_AUTHORIZATION'] = $this->testHeader;
         $this->object = new Request();
@@ -32,10 +34,11 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      * @test
      * @covers Simgroep\Oauth1Service\Request::getAuthorizationHeader
      * @covers Simgroep\Oauth1Service\Request::__construct
-     * @expectedException \Simgroep\Oauth1Service\Exception
      */
     public function constructWithoutHeader()
     {
+        $this->expectException(\Simgroep\Oauth1Service\Exception::class);
+
         unset($_SERVER['HTTP_AUTHORIZATION']);
         $this->object = new Request();
     }

@@ -73,7 +73,10 @@ class Service
             return false;
         }
 
-        $this->tokenSecret = $this->tokenProvider->getSecret($this->header['token']);
+        if ($this->accessTokenRequired === true) {
+            $this->tokenSecret = $this->tokenProvider->getSecret($this->header['token']);
+        }
+
         if ($this->accessTokenRequired === true and $this->header['token'] == '') {
             $this->error = 'Access token missing.';
             return false;
@@ -98,7 +101,7 @@ class Service
     {
         return array(
             'consumerToken' => $this->header['consumer_key'],
-            'accessToken' => $this->header['token'],
+            'accessToken' => $this->accessTokenRequired ? $this->header['token'] : '',
         );
     }
 
@@ -110,7 +113,7 @@ class Service
             'oauth_signature' => '',
             'oauth_signature_method' => 'HMAC-SHA1',
             'oauth_timestamp' => $this->header['timestamp'],
-            'oauth_token' => $this->header['token'],
+            'oauth_token' => $this->accessTokenRequired ? $this->header['token'] : '',
             'oauth_version' => '1.0',
         );
 
@@ -145,7 +148,7 @@ class Service
     protected function getBaseUrl()
     {
         $parts = parse_url($this->request->getRequestUri());
-        return sprintf('%s://%s%s', $parts['scheme'] , $parts['host'], $parts['path']);
+        return sprintf('%s://%s%s', $parts['scheme'] ?? 'http' , $parts['host'] ?? '80', $parts['path']);
     }
 }
 

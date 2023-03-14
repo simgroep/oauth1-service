@@ -2,14 +2,16 @@
 
 namespace Simgroep\Oauth1Service;
 
-class ExceptionTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ExceptionTest extends TestCase
 {
     /**
      * @var \Simgroep\Oauth1Service\Exception
      */
     protected $object;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new Exception();
     }
